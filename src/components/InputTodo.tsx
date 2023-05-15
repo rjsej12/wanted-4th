@@ -1,4 +1,6 @@
-import { FaPlusCircle, FaSpinner } from 'react-icons/fa';
+import { FaPlusCircle, FaSearch } from 'react-icons/fa';
+import { ImSpinner8 } from 'react-icons/im';
+
 import { useCallback, useEffect, useState } from 'react';
 
 import { createTodo } from '../api/todo';
@@ -51,6 +53,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 		try {
 			setIsLoading(true);
 
+			setInputText(value);
 			const newItem = { title: value };
 			const data = await createTodo(newItem);
 
@@ -71,17 +74,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 	}, [setFocus]);
 
 	return (
-		<form className="form-container" onSubmit={handleSubmit}>
-			<input
-				className="input-text"
-				placeholder="Add new todo..."
-				ref={ref}
-				value={inputText}
-				onChange={(e) => {
-					setInputText(e.target.value);
-				}}
-				disabled={isLoading}
-			/>
+		<div className="form-wrapper">
 			{recommendList ? (
 				<Dropdown
 					recommendList={recommendList}
@@ -94,14 +87,29 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 			) : (
 				<></>
 			)}
-			{!isLoading && !isSearching ? (
-				<button className="input-submit" type="submit">
-					<FaPlusCircle className="btn-plus" />
-				</button>
-			) : (
-				<FaSpinner className="spinner" />
-			)}
-		</form>
+			<form className={isSearching ? 'form-container accent-border' : 'form-container'} onSubmit={handleSubmit}>
+				<div className="search-bar">
+					<FaSearch />
+					<input
+						className="input-text"
+						placeholder="Add new todo..."
+						ref={ref}
+						value={inputText}
+						onChange={(e) => {
+							setInputText(e.target.value);
+						}}
+						disabled={isLoading}
+					/>
+				</div>
+				{!isLoading && !isSearching ? (
+					<button className="input-submit" type="submit">
+						<FaPlusCircle className="btn-plus" />
+					</button>
+				) : (
+					<ImSpinner8 className="spinner" />
+				)}
+			</form>
+		</div>
 	);
 };
 

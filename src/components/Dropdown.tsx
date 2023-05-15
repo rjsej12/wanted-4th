@@ -1,4 +1,4 @@
-import { FaSpinner } from 'react-icons/fa';
+import { ImSpinner8 } from 'react-icons/im';
 import DropdownItem from './DropdownItem';
 import useIntersectionObserver from '../hooks/useIntersectonObserver';
 // import { useEffect, useState } from 'react';
@@ -24,7 +24,7 @@ const Dropdown = ({ recommendList, isSearching, setPage, handleClick, isMoreData
 			{recommendList.map((searchWord, index) => (
 				<DropdownItem key={index} searchWord={searchWord} keyword={keyword} handleClick={handleClick} />
 			))}
-			{isSearching ? <FaSpinner className="spinner align-center" /> : <></>}
+			{isSearching ? <ImSpinner8 className="spinner align-center" /> : <></>}
 			{!isSearching && isMoreData ? (
 				<span className="align-center" ref={setTarget}>
 					...

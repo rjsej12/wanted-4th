@@ -1,4 +1,5 @@
-import { FaSpinner, FaTrash } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
+import { ImSpinner8 } from 'react-icons/im';
 import { useCallback, useEffect, useState } from 'react';
 
 import { deleteTodo } from '../api/todo';
@@ -37,7 +38,7 @@ const TodoItem = ({ id, title, setTodos }: TodoItemProps) => {
 						<FaTrash className="btn-trash" />
 					</button>
 				) : (
-					<FaSpinner className="spinner" />
+					<ImSpinner8 className="spinner" />
 				)}
 			</div>
 		</li>
