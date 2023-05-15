@@ -48,6 +48,25 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 		[inputText, setTodos]
 	);
 
+	const handleClick = (value: string) => async () => {
+		try {
+			setIsLoading(true);
+
+			const newItem = { title: value };
+			const { data } = await createTodo(newItem);
+
+			if (data) {
+				return setTodos((prev) => [...prev, data]);
+			}
+		} catch (error) {
+			console.error(error);
+			alert('Something went wrong.');
+		} finally {
+			setInputText('');
+			setIsLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		setFocus();
 	}, [setFocus]);
@@ -93,7 +112,12 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 				disabled={isLoading}
 			/>
 			{searchedList ? (
-				<Dropdown searchedList={searchedList} isSearching={isSearching} setPage={setPage} />
+				<Dropdown
+					searchedList={searchedList}
+					isSearching={isSearching}
+					setPage={setPage}
+					handleClick={handleClick}
+				/>
 			) : (
 				<></>
 			)}

@@ -7,9 +7,10 @@ type DropdownProps = {
 	searchedList: Search;
 	isSearching: boolean;
 	setPage: React.Dispatch<React.SetStateAction<number>>;
+	handleClick: (value: string) => () => Promise<void>;
 };
 
-const Dropdown = ({ searchedList, isSearching, setPage }: DropdownProps) => {
+const Dropdown = ({ searchedList, isSearching, setPage, handleClick }: DropdownProps) => {
 	const [results, setResults] = useState<string[]>([]);
 	const { result, page, limit, q: keyword, qty, total } = searchedList;
 	const isMoreData = limit * (page - 1) + qty < total;
@@ -26,7 +27,7 @@ const Dropdown = ({ searchedList, isSearching, setPage }: DropdownProps) => {
 	return results.length ? (
 		<ul className="dropdown">
 			{results.map((searchWord, index) => (
-				<DropdownItem key={index} searchWord={searchWord} keyword={keyword} />
+				<DropdownItem key={index} searchWord={searchWord} keyword={keyword} handleClick={handleClick} />
 			))}
 			{isSearching ? <FaSpinner className="spinner align-center" /> : <></>}
 			{!isSearching && isMoreData ? (
