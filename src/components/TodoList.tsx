@@ -2,8 +2,8 @@ import React from 'react';
 import TodoItem from './TodoItem';
 
 type TodoListProps = {
-	todos: Todo[],
-	setTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
+	todos: Todo[];
+	setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
 const TodoList = ({ todos, setTodos }: TodoListProps) => {
