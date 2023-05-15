@@ -1,32 +1,27 @@
 import { FaSpinner } from 'react-icons/fa';
 import DropdownItem from './DropdownItem';
 import useIntersectionObserver from '../hooks/useIntersectonObserver';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 type DropdownProps = {
-	searchedList: Search;
+	recommendList: string[];
 	isSearching: boolean;
 	setPage: React.Dispatch<React.SetStateAction<number>>;
 	handleClick: (value: string) => () => Promise<void>;
+	isMoreData: boolean;
+	keyword: string;
 };
 
-const Dropdown = ({ searchedList, isSearching, setPage, handleClick }: DropdownProps) => {
-	const [results, setResults] = useState<string[]>([]);
-	const { result, page, limit, q: keyword, qty, total } = searchedList;
-	const isMoreData = limit * (page - 1) + qty < total;
+const Dropdown = ({ recommendList, isSearching, setPage, handleClick, isMoreData, keyword }: DropdownProps) => {
 	const onIntersect: IntersectionObserverCallback = ([{ isIntersecting }]) => {
 		if (isSearching) return;
 		if (isIntersecting) setPage((prev) => prev + 1);
 	};
 	const { setTarget } = useIntersectionObserver({ onIntersect });
 
-	useEffect(() => {
-		setResults((prev) => [...prev, ...result]);
-	}, [result]);
-
-	return results.length ? (
+	return recommendList.length ? (
 		<ul className="dropdown">
-			{results.map((searchWord, index) => (
+			{recommendList.map((searchWord, index) => (
 				<DropdownItem key={index} searchWord={searchWord} keyword={keyword} handleClick={handleClick} />
 			))}
 			{isSearching ? <FaSpinner className="spinner align-center" /> : <></>}

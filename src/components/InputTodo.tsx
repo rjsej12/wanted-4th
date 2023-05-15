@@ -2,9 +2,9 @@ import { FaPlusCircle, FaSpinner } from 'react-icons/fa';
 import { useCallback, useEffect, useState } from 'react';
 
 import { createTodo } from '../api/todo';
-import { getSearchedList } from '../api/search';
 import useFocus from '../hooks/useFocus';
 import useDebounce from '../hooks/useDebounce';
+import useSearch from '../hooks/useSearch';
 import Dropdown from './Dropdown';
 
 type InputTodoProps = {
@@ -14,11 +14,10 @@ type InputTodoProps = {
 const InputTodo = ({ setTodos }: InputTodoProps) => {
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [isSearching, setIsSearching] = useState(false);
-	const [searchedList, setSearchedList] = useState<Search>();
-	const [page, setPage] = useState(1);
+
 	const { ref, setFocus } = useFocus();
 	const debouncedInputText = useDebounce(inputText);
+	const { isSearching, recommendList, setPage, isMoreData } = useSearch(debouncedInputText);
 
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +31,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 				}
 
 				const newItem = { title: trimmed };
-				const { data } = await createTodo(newItem);
+				const data = await createTodo(newItem);
 
 				if (data) {
 					return setTodos((prev) => [...prev, data]);
@@ -53,7 +52,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 			setIsLoading(true);
 
 			const newItem = { title: value };
-			const { data } = await createTodo(newItem);
+			const data = await createTodo(newItem);
 
 			if (data) {
 				return setTodos((prev) => [...prev, data]);
@@ -71,30 +70,6 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 		setFocus();
 	}, [setFocus]);
 
-	useEffect(() => {
-		const fetchSearchedList = async () => {
-			if (debouncedInputText === '') {
-				setSearchedList(undefined);
-				setPage(1);
-				return;
-			}
-			try {
-				setIsSearching(true);
-
-				const { data } = await getSearchedList(debouncedInputText, page);
-				if (data) {
-					setSearchedList(data);
-				}
-			} catch (error) {
-				console.error(error);
-				alert('Something went wrong.');
-			} finally {
-				setIsSearching(false);
-			}
-		};
-		fetchSearchedList();
-	}, [debouncedInputText, page]);
-
 	return (
 		<form className="form-container" onSubmit={handleSubmit}>
 			<input
@@ -104,19 +79,17 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 				value={inputText}
 				onChange={(e) => {
 					setInputText(e.target.value);
-					if (e.target.value === '') {
-						setSearchedList(undefined);
-						setPage(1);
-					}
 				}}
 				disabled={isLoading}
 			/>
-			{searchedList ? (
+			{recommendList ? (
 				<Dropdown
-					searchedList={searchedList}
+					recommendList={recommendList}
 					isSearching={isSearching}
 					setPage={setPage}
+					isMoreData={isMoreData}
 					handleClick={handleClick}
+					keyword={debouncedInputText}
 				/>
 			) : (
 				<></>
