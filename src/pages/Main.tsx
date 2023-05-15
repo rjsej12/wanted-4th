@@ -10,7 +10,7 @@ const Main = () => {
 
 	useEffect(() => {
 		(async () => {
-			const { data } = await getTodoList();
+			const data = await getTodoList();
 			setTodoListData(data || []);
 		})();
 	}, []);
