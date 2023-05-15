@@ -14,13 +14,11 @@ type InputTodoProps = {
 const InputTodo = ({ setTodos }: InputTodoProps) => {
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
 	const [searchedList, setSearchedList] = useState<Search>();
+	const [page, setPage] = useState(1);
 	const { ref, setFocus } = useFocus();
 	const debouncedInputText = useDebounce(inputText);
-
-	useEffect(() => {
-		setFocus();
-	}, [setFocus]);
 
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,15 +49,20 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 	);
 
 	useEffect(() => {
+		setFocus();
+	}, [setFocus]);
+
+	useEffect(() => {
 		const fetchSearchedList = async () => {
 			if (debouncedInputText === '') {
 				setSearchedList(undefined);
+				setPage(1);
 				return;
 			}
 			try {
-				setIsLoading(true);
+				setIsSearching(true);
 
-				const { data } = await getSearchedList(debouncedInputText);
+				const { data } = await getSearchedList(debouncedInputText, page);
 				if (data) {
 					setSearchedList(data);
 				}
@@ -67,11 +70,11 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 				console.error(error);
 				alert('Something went wrong.');
 			} finally {
-				setIsLoading(false);
+				setIsSearching(false);
 			}
 		};
 		fetchSearchedList();
-	}, [debouncedInputText]);
+	}, [debouncedInputText, page]);
 
 	return (
 		<form className="form-container" onSubmit={handleSubmit}>
@@ -80,11 +83,21 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 				placeholder="Add new todo..."
 				ref={ref}
 				value={inputText}
-				onChange={(e) => setInputText(e.target.value)}
+				onChange={(e) => {
+					setInputText(e.target.value);
+					if (e.target.value === '') {
+						setSearchedList(undefined);
+						setPage(1);
+					}
+				}}
 				disabled={isLoading}
 			/>
-			<Dropdown searchedList={searchedList} isLoading={isLoading} />
-			{!isLoading ? (
+			{searchedList ? (
+				<Dropdown searchedList={searchedList} isSearching={isSearching} setPage={setPage} />
+			) : (
+				<></>
+			)}
+			{!isLoading && !isSearching ? (
 				<button className="input-submit" type="submit">
 					<FaPlusCircle className="btn-plus" />
 				</button>
