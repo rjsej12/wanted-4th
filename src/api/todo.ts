@@ -1,10 +1,9 @@
+import { TODO_RESOURCE } from '../constants/config';
 import apiRequest from './index';
-
-const RESOURCE = '/todos';
 
 export const getTodoList = async (): Promise<Todo[]> => {
 	try {
-		const response = await apiRequest.get(`${RESOURCE}`);
+		const response = await apiRequest.get(`${TODO_RESOURCE}`);
 
 		return response.data;
 	} catch (error) {
@@ -14,7 +13,7 @@ export const getTodoList = async (): Promise<Todo[]> => {
 
 export const createTodo = async (data: any): Promise<Todo> => {
 	try {
-		const response = await apiRequest.post(`${RESOURCE}`, data);
+		const response = await apiRequest.post(`${TODO_RESOURCE}`, data);
 
 		return response.data;
 	} catch (error) {
@@ -24,7 +23,7 @@ export const createTodo = async (data: any): Promise<Todo> => {
 
 export const deleteTodo = async (id: string): Promise<Todo> => {
 	try {
-		const response = await apiRequest.delete(`${RESOURCE}/${id}`);
+		const response = await apiRequest.delete(`${TODO_RESOURCE}/${id}`);
 
 		return response.data;
 	} catch (error) {

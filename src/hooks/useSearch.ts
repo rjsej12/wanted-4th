@@ -1,35 +1,27 @@
+import { DEFAULT_PAGE, DEFAULT_SEARCHEDLIST } from '../constants/search';
 import { getSearchedList } from '../api/search';
 import { useEffect, useState } from 'react';
 
-const defaultSearchedList = {
-	result: [],
-	page: 1,
-	limit: 10,
-	q: '',
-	qty: 0,
-	total: 0,
-};
-
 const useSearch = (inputText: string) => {
 	const [isSearching, setIsSearching] = useState(false);
-	const [searchedList, setSearchedList] = useState<Search>(defaultSearchedList);
-	const [page, setPage] = useState(1);
+	const [searchedList, setSearchedList] = useState<Search>(DEFAULT_SEARCHEDLIST);
+	const [page, setPage] = useState(DEFAULT_PAGE);
 	const [recommendList, setRecommendList] = useState<string[]>([]);
 
 	const { page: apiPage, limit, q, qty, total } = searchedList;
-	const isMoreData = limit * (apiPage - 1) + qty < total;
+	const isMoreData = limit * (apiPage - DEFAULT_PAGE) + qty < total;
 	useEffect(() => {
 		const fetchSearchedList = async () => {
 			if (inputText === '') {
-				setSearchedList(defaultSearchedList);
+				setSearchedList(DEFAULT_SEARCHEDLIST);
 				setRecommendList([]);
-				setPage(1);
+				setPage(DEFAULT_PAGE);
 				return;
 			}
 			if (q !== inputText) {
-				setSearchedList(defaultSearchedList);
+				setSearchedList(DEFAULT_SEARCHEDLIST);
 				setRecommendList([]);
-				setPage(1);
+				setPage(DEFAULT_PAGE);
 			}
 			try {
 				setIsSearching(true);

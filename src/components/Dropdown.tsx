@@ -1,7 +1,6 @@
 import { ImSpinner8 } from 'react-icons/im';
 import DropdownItem from './DropdownItem';
 import useIntersectionObserver from '../hooks/useIntersectonObserver';
-// import { useEffect, useState } from 'react';
 
 type DropdownProps = {
 	recommendList: string[];

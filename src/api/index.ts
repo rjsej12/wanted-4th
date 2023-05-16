@@ -1,14 +1,12 @@
+import { BASE_URL, TOKEN } from '../constants/config';
 import axios from 'axios';
 import { AxiosRequestConfig } from 'axios';
 import { AxiosResponse } from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL;
-const token = process.env.REACT_APP_TOKEN;
-
 const baseInstance = axios.create({
-	baseURL,
+	baseURL: BASE_URL,
 	headers: {
-		Authorization: `Bearer ${token}`,
+		Authorization: `Bearer ${TOKEN}`,
 	},
 });
 
