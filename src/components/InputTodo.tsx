@@ -16,6 +16,7 @@ type InputTodoProps = {
 const InputTodo = ({ setTodos }: InputTodoProps) => {
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [isTyping, setIsTyping] = useState(false);
 
 	const { ref, setFocus } = useFocus();
 	const debouncedInputText = useDebounce(inputText);
@@ -73,6 +74,10 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 		setFocus();
 	}, [setFocus]);
 
+	useEffect(() => {
+		setIsTyping(false);
+	}, [debouncedInputText]);
+
 	return (
 		<div className="form-wrapper">
 			{recommendList ? (
@@ -87,7 +92,10 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 			) : (
 				<></>
 			)}
-			<form className={isSearching ? 'form-container accent-border' : 'form-container'} onSubmit={handleSubmit}>
+			<form
+				className={isSearching || isTyping ? 'form-container accent-border' : 'form-container'}
+				onSubmit={handleSubmit}
+			>
 				<div className="search-bar">
 					<FaSearch />
 					<input
@@ -97,6 +105,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
 						value={inputText}
 						onChange={(e) => {
 							setInputText(e.target.value);
+							setIsTyping(true);
 						}}
 						disabled={isLoading}
 					/>
